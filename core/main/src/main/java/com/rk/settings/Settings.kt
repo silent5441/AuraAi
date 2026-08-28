@@ -14,6 +14,7 @@ import com.rk.settings.editor.DEFAULT_EXCLUDED_FILES_SEARCH
 import com.rk.settings.editor.DEFAULT_EXTRA_KEYS_COMMANDS
 import com.rk.settings.editor.DEFAULT_EXTRA_KEYS_SYMBOLS
 import com.rk.settings.terminal.DEFAULT_TERMINAL_EXTRA_KEYS
+import com.rk.theme.aura
 import com.rk.theme.blueberry
 import com.rk.utils.application
 import com.rk.utils.hasHardwareKeyboard
@@ -43,6 +44,9 @@ object Settings {
     var word_wrap_text by CachedPreference("word_wrap_text", true)
     var word_wrap by CachedPreference("word_wrap", false)
     var restore_sessions by CachedPreference("restore_sessions", true)
+    var recent_projects by CachedPreference("recent_projects", "")
+    var all_projects by CachedPreference("all_projects", "")
+    var pinned_sessions by CachedPreference("pinned_sessions", "")
     var cursor_animation by CachedPreference("cursor_animation", true)
     var show_extra_keys by CachedPreference("show_extra_keys", hasHardwareKeyboard(application!!).not())
     var keep_drawer_locked by CachedPreference("drawer_lock", false)
@@ -69,6 +73,8 @@ object Settings {
     var verbose_error by CachedPreference("verbose_error", BuildConfig.DEBUG)
     var project_as_pwd by CachedPreference("project_as_pwd", true)
     var terminate_sessions_on_exit by CachedPreference("terminate_sessions_on_exit", false)
+    var confirm_close_session by CachedPreference("confirm_close_session", true)
+    var session_history_enabled by CachedPreference("session_history_enabled", true)
     var donated by CachedPreference("donated", false)
     var sandbox by CachedPreference("sandbox", true)
     var terminal_virus_notice by CachedPreference("terminal_virus_notice", false)
@@ -86,6 +92,8 @@ object Settings {
     var auto_open_new_files by CachedPreference("auto_open_new_files", true)
     var complete_on_enter by CachedPreference("complete_on_enter", true)
     var http_server_port by CachedPreference("http_server_port", 8357)
+    var agent_bridge_enabled by CachedPreference("agent_bridge_enabled", true)
+    var agent_bridge_port by CachedPreference("agent_bridge_port", 9270)
     var launch_in_browser by CachedPreference("launch_in_browser", false)
     var inject_eruda by CachedPreference("inject_eruda", true)
     var auto_close_tags by CachedPreference("auto_close_tags", true)
@@ -124,7 +132,7 @@ object Settings {
 
     // String settings
     var font_gson by CachedPreference("selected_font", "")
-    var theme by CachedPreference("theme", blueberry.id)
+    var theme by CachedPreference("theme", aura.id)
     var icon_pack: String by CachedPreference("icon_pack", "")
     var editor_font_path by CachedPreference("selected_font_path", "")
     var app_font_path by CachedPreference("app_font_path", "")

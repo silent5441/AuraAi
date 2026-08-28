@@ -15,7 +15,15 @@ sealed class SettingsRoutes(val route: String) {
 
     data object TerminalCheck : SettingsRoutes("terminal_check")
 
+    data object SessionHistory : SettingsRoutes("session_history")
+
     data object About : SettingsRoutes("about")
+
+    data object Agent : SettingsRoutes("agent")
+
+    data object Setups : SettingsRoutes("aura_setups")
+
+    data object ChatMemory : SettingsRoutes("aura_chat_memory")
 
     data object EditorFontScreen : SettingsRoutes("editor_font_screen")
 

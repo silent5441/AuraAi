@@ -3,6 +3,7 @@ package com.rk.terminal
 import android.app.Activity
 import android.content.Context
 import com.rk.activities.main.MainActivity
+import com.rk.agent.AgentBridge
 import com.rk.exec.pendingCommand
 import com.rk.file.FileWrapper
 import com.rk.file.child
@@ -28,6 +29,7 @@ object MkSession {
         sessionClient: TerminalSessionClient,
         sessionId: String,
         isExtraction: Boolean = false,
+        useSandbox: Boolean = Settings.sandbox,
     ): Pair<TerminalSession, SessionPwd> {
         val envVariables =
             mapOf(
@@ -43,7 +45,7 @@ object MkSession {
                 "PATH" to "${System.getenv("PATH")}:${localBinDir(context).absolutePath}",
             )
 
-        val workingDir = runBlocking { getPwd(context) }
+        val workingDir = runBlocking { getPwd(context, useSandbox) }
 
         val tmpDir = File(getTempDir(), "terminal/$sessionId")
 
@@ -68,7 +70,7 @@ object MkSession {
                 "PRIVATE_DIR=${context.filesDir.parentFile!!.absolutePath}",
                 "LD_LIBRARY_PATH=${localLibDir(context).absolutePath}",
                 "EXT_HOME=${sandboxHomeDir(context)}",
-                "HOME=${if (Settings.sandbox){ "/home"} else{ sandboxHomeDir(context)}}",
+                "HOME=${if (useSandbox){ "/home"} else{ sandboxHomeDir(context)}}",
                 "PROMPT_DIRTRIM=2",
                 "LINKER=${if(File("/system/bin/linker64").exists()){"/system/bin/linker64"}else{"/system/bin/linker"}}",
                 "NATIVE_LIB_DIR=${context.applicationInfo.nativeLibraryDir}",
@@ -97,6 +99,9 @@ object MkSession {
         pendingCommand?.env?.let { env.addAll(it) }
 
         setupTerminalFiles()
+        setupAgentFiles()
+
+        AgentBridge.start(application!!)
 
         val sandboxSH = localBinDir(context).child("sandbox")
         val setupSH = localBinDir(context).child("setup")
@@ -106,7 +111,7 @@ object MkSession {
         val shell =
             if (pendingCommand == null) {
                 args =
-                    if (Settings.sandbox) {
+                    if (useSandbox) {
                         arrayOf(sandboxSH.absolutePath)
                     } else {
                         arrayOf()
@@ -146,7 +151,7 @@ object MkSession {
     }
 }
 
-suspend fun getPwd(context: Context): String {
+suspend fun getPwd(context: Context, useSandbox: Boolean = Settings.sandbox): String {
     val pendingWorkingDir = pendingCommand?.workingDir
     if (pendingWorkingDir != null) {
         return pendingWorkingDir
@@ -162,7 +167,7 @@ suspend fun getPwd(context: Context): String {
             if (it is EditorTab && it.file is FileWrapper) {
                 val parent = it.file.getParentFile()
                 if (parent != null && parent is FileWrapper) {
-                    return if (Settings.sandbox) {
+                    return if (useSandbox) {
                         parent.getAbsolutePath().removePrefix(localDir(context).absolutePath)
                     } else {
                         parent.getAbsolutePath()
@@ -175,7 +180,7 @@ suspend fun getPwd(context: Context): String {
             if (it is EditorTab && it.file is FileWrapper) {
                 val parent = it.file.getParentFile()
                 if (parent != null && parent is FileWrapper) {
-                    return if (Settings.sandbox) {
+                    return if (useSandbox) {
                         parent.getAbsolutePath().removePrefix(localDir(context).absolutePath)
                     } else {
                         parent.getAbsolutePath()
@@ -184,7 +189,7 @@ suspend fun getPwd(context: Context): String {
             }
         }
     }
-    return if (Settings.sandbox) {
+    return if (useSandbox) {
         "/home"
     } else {
         sandboxHomeDir(context).absolutePath

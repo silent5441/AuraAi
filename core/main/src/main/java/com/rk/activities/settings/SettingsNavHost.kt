@@ -12,6 +12,9 @@ import com.rk.lsp.LspRegistry
 import com.rk.settings.SettingsScreen
 import com.rk.settings.about.AboutScreen
 import com.rk.settings.app.SettingsAppScreen
+import com.rk.agent.ChatMemoryScreen
+import com.rk.settings.agent.AgentScreen
+import com.rk.terminal.setup.SetupScreen
 import com.rk.settings.debugOptions.AppLogs
 import com.rk.settings.debugOptions.DeveloperOptions
 import com.rk.settings.editor.AppFontScreen
@@ -58,6 +61,9 @@ fun SettingsNavHost(navController: NavHostController, activity: SettingsActivity
         composable(SettingsRoutes.TerminalSettings.route) { SettingsTerminalScreen() }
         composable(SettingsRoutes.TerminalExtraKeys.route) { TerminalExtraKeys() }
         composable(SettingsRoutes.TerminalCheck.route) { TerminalCheckScreen() }
+        composable(SettingsRoutes.Agent.route) { AgentScreen(activity) }
+        composable(SettingsRoutes.Setups.route) { SetupScreen(activity) }
+        composable(SettingsRoutes.ChatMemory.route) { ChatMemoryScreen(activity) }
         composable(SettingsRoutes.About.route) { AboutScreen() }
         composable(SettingsRoutes.EditorFontScreen.route) { EditorFontScreen() }
         composable(SettingsRoutes.AppFontScreen.route) { AppFontScreen() }

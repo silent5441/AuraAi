@@ -51,6 +51,7 @@ import com.rk.file.sandboxDir
 import com.rk.resources.getString
 import com.rk.resources.strings
 import com.rk.terminal.NEXT_STAGE
+import com.rk.terminal.SessionHistory
 import com.rk.terminal.SessionService
 import com.rk.terminal.TerminalBackEnd
 import com.rk.terminal.TerminalScreen
@@ -122,13 +123,31 @@ class Terminal : AppCompatActivity() {
         if (pwd == null) {
             return
         }
-        val sessionId = File(pwd).name
+        val sessionId = intent.getStringExtra("session_id") ?: File(pwd).name
 
         lifecycleScope.launch(Dispatchers.Main) {
             val client = TerminalBackEnd()
-            val info = binder.getSessionInfoByPwd(pwd) ?: binder.createSession(sessionId, client, this@Terminal)
 
-            this@Terminal.changeSession(info.id)
+            // Check if session already exists
+            val existingSession = binder.getSession(sessionId)
+            if (existingSession != null) {
+                this@Terminal.changeSession(sessionId)
+            } else {
+                // Try to find session info by working directory
+                val existingByPwd = binder.getSessionInfoByPwd(pwd)
+                if (existingByPwd != null) {
+                    this@Terminal.changeSession(existingByPwd.id)
+                } else {
+                    // Look up history for the session metadata
+                    val historySession = com.rk.terminal.SessionHistory.getSession(sessionId)
+                    val displayName = historySession?.name ?: sessionId
+                    val useSandbox = historySession?.isSandbox ?: com.rk.settings.Settings.sandbox
+
+                    val info = binder.createSession(sessionId, client, this@Terminal, displayName, useSandbox)
+                    this@Terminal.changeSession(info.id)
+                }
+            }
+
             setIntent(Intent())
         }
     }

@@ -89,7 +89,7 @@ private fun LocalExtension.verifyCompatibility(application: Application) {
 
     if (isBelowMin || isAboveMax) {
         throw IllegalStateException(
-            "Extension '${manifest.name}' (${manifest.version}) is not compatible with this version of Xed-Editor (min: $minAppVersion, max: $maxAppVersion, Xed-Editor: $xedVersionCode)"
+            "Extension '${manifest.name}' (${manifest.version}) is not compatible with this version of AuraAi (min: $minAppVersion, max: $maxAppVersion, AuraAi: $xedVersionCode)"
         )
     }
 }

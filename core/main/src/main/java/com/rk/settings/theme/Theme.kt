@@ -49,6 +49,7 @@ import com.rk.settings.Settings
 import com.rk.settings.editor.refreshEditors
 import com.rk.theme.ThemeHolder
 import com.rk.theme.amoled
+import com.rk.theme.aura
 import com.rk.theme.blueberry
 import com.rk.theme.builtInThemes
 import com.rk.theme.currentTheme
@@ -128,8 +129,8 @@ fun ThemeScreen(modifier: Modifier = Modifier) {
                             IconButton(
                                 onClick = {
                                     if (currentTheme.value?.id == theme.id) {
-                                        currentTheme.value = blueberry
-                                        Settings.theme = blueberry.id
+                                        currentTheme.value = aura
+                                        Settings.theme = aura.id
                                         refreshEditors()
                                     }
 

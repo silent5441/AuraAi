@@ -1,7 +1,6 @@
 package com.rk.activities.main
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +29,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onSizeChanged
@@ -101,11 +98,7 @@ fun MainContent(
 
     Column(Modifier.fillMaxSize().padding(innerPadding)) {
         if (mainViewModel.tabs.isEmpty()) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                TextButton(onClick = { scope.launch { drawerState.open() } }) {
-                    Text(text = stringResource(strings.click_open), style = MaterialTheme.typography.bodyLarge)
-                }
-            }
+            AuraHome(drawerState, drawerViewModel)
         } else {
             val pagerState = rememberPagerState(pageCount = { mainViewModel.tabs.size })
 

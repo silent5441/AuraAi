@@ -18,8 +18,8 @@ android {
         targetSdk = 37
 
         // versioning
-        versionCode = 95
-        versionName = "3.3.1"
+        versionCode = 105
+        versionName = "3.4.0"
         vectorDrawables { useSupportLibrary = true }
     }
 
@@ -43,31 +43,19 @@ android {
 
     signingConfigs {
         create("release") {
-            val isGitHubActions = System.getenv("GITHUB_ACTIONS") == "true"
+            val signingDir = rootProject.file("signing")
+            val propertiesFile = File("${signingDir.path}/signing.properties")
+            val storeFilePath = "${signingDir.path}/xed.keystore"
 
-            val propertiesFilePath =
-                if (isGitHubActions) {
-                    "/tmp/signing.properties"
-                } else {
-                    "/home/rohit/Android/xed-signing/signing.properties"
-                }
-
-            val propertiesFile = File(propertiesFilePath)
-            if (propertiesFile.exists()) {
+            if (signingDir.exists()) {
                 val properties = Properties()
                 properties.load(propertiesFile.inputStream())
                 keyAlias = properties["keyAlias"] as String?
                 keyPassword = properties["keyPassword"] as String?
-                storeFile =
-                    if (isGitHubActions) {
-                        File("/tmp/xed.keystore")
-                    } else {
-                        (properties["storeFile"] as String?)?.let { File(it) }
-                    }
-
+                storeFile = File(storeFilePath)
                 storePassword = properties["storePassword"] as String?
             } else {
-                println("Signing properties file not found at $propertiesFilePath")
+                println("Signing directory not found at ${signingDir.path}")
             }
         }
         getByName("debug") {
@@ -92,7 +80,13 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            resValue("string", "app_name", "Xed-Debug")
+            resValue("string", "app_name", "AuraAi-Debug")
+        }
+
+        create("pro") {
+            initWith(buildTypes.getByName("release"))
+            applicationIdSuffix = ".pro"
+            resValue("string", "app_name", "AuraAi-Pro")
         }
 
         create("benchmark") {

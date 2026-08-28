@@ -281,7 +281,11 @@ fun runExtensionUpdateAction(
                 val result = extensionManager.installExtensionFromZip(tempFile)
                 if (result is InstallResult.Success) {
                     extensionManager.setExtensionDisabled(result.extension.id, false)
-                    result.extension.load(application!!).onFailure { error ->
+                    result.extension.load(application!!).onSuccess { api ->
+                        if (result.performedUpdate) {
+                            api.afterUpdate()
+                        }
+                    }.onFailure { error ->
                         extensionManager.setExtensionDisabled(result.extension.id, true)
                         errorMsg = error.message ?: "Failed to load extension"
                         withContext(Dispatchers.Main) {
@@ -421,7 +425,11 @@ fun installExtensionFromUri(scope: CoroutineScope, uri: Uri?, activity: AppCompa
                 if (result is InstallResult.Success) {
                     extensionManager.setExtensionDisabled(result.extension.id, false)
                     val initialInstallation = !result.performedUpdate
-                    result.extension.load(application!!, initialInstallation).onFailure { error ->
+                    result.extension.load(application!!, initialInstallation).onSuccess { api ->
+                        if (result.performedUpdate) {
+                            api.afterUpdate()
+                        }
+                    }.onFailure { error ->
                         extensionManager.setExtensionDisabled(result.extension.id, true)
                         withContext(Dispatchers.Main) {
                             activity?.let {

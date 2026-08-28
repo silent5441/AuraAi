@@ -97,6 +97,13 @@ private fun Categories(navController: NavController) {
             iconResource = drawables.run,
             onNavigate = { navController.navigate(SettingsRoutes.Runners.route) },
         )
+
+        PreferenceCategory(
+            label = stringResource(strings.agent),
+            description = stringResource(strings.agent_desc),
+            iconResource = drawables.bolt,
+            onNavigate = { navController.navigate(SettingsRoutes.Agent.route) },
+        )
     }
 
     if (InbuiltFeatures.extensions.state.value) {

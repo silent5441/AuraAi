@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.os.LocaleListCompat
 import com.github.anrwatchdog.ANRWatchDog
+import com.rk.agent.AgentBridge
 import com.rk.activities.main.SessionManager
 import com.rk.commands.CommandProvider
 import com.rk.commands.KeybindingsManager
@@ -141,6 +142,10 @@ class App : Application() {
             }
 
             launch { runCatching { UpdateChecker.checkForUpdates("main") } }
+
+            launch(Dispatchers.IO) {
+                if (Settings.agent_bridge_enabled) runCatching { AgentBridge.start(application!!) }
+            }
 
             // wait until UpdateManager is done, it should only take few milliseconds
             UpdateManager.inspect()

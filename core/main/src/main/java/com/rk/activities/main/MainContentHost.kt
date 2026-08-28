@@ -158,7 +158,6 @@ fun MainActivity.MainContentHost(
                             drawerState = drawerState,
                             viewModel = viewModel,
                             drawerViewModel = drawerViewModel,
-                            fullScreen = Settings.fullscreen,
                             onDrag = { dragAmount ->
                                 accumulator += dragAmount
 

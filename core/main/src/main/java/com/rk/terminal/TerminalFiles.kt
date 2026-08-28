@@ -5,6 +5,7 @@ import com.rk.file.createFileIfNot
 import com.rk.file.localBinDir
 import com.rk.file.localDir
 import com.rk.file.sandboxDir
+import com.rk.file.sandboxHomeDir
 import com.rk.utils.application
 
 fun setupTerminalFiles() {
@@ -31,13 +32,32 @@ fun setupTerminalFiles() {
         }
     }
 
-    val internalFiles = listOf("init", "sandbox", "setup", "utils")
+    val internalFiles = listOf("init", "sandbox", "setup", "utils", "agent-setup", "aura-setup")
     internalFiles.forEach { setupAssetFile(it) }
 
     application!!.assets.list("terminal/lsp")?.forEach { setupLspFile(it.removeSuffix(".sh")) }
 }
 
 fun setupLspFile(fileName: String) = setupAssetFile("lsp/$fileName")
+
+fun setupAgentFiles() {
+    if (sandboxDir().exists().not()) return
+
+    val opencodeDir = sandboxHomeDir().child(".config").child("opencode")
+    val toolsDir = opencodeDir.child("tools")
+
+    runCatching {
+        toolsDir.mkdirs()
+        toolsDir.child("xed.js").apply {
+            createFileIfNot()
+            writeText(application!!.assets.open("agent/xed.js").bufferedReader().use { it.readText() })
+        }
+        opencodeDir.child("instructions.md").apply {
+            createFileIfNot()
+            writeText(application!!.assets.open("agent/instructions.md").bufferedReader().use { it.readText() })
+        }
+    }
+}
 
 fun setupAssetFile(fileName: String) {
     with(localBinDir().child(fileName)) {

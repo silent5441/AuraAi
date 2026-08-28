@@ -37,7 +37,13 @@ class GitViewModel : ViewModel() {
 
     var isLoading by mutableStateOf(false)
 
+    private val failedRoots = mutableSetOf<String>()
+
     fun loadRepository(root: String) {
+        if (root in failedRoots) {
+            currentRoot.value = null
+            return
+        }
         try {
             currentRoot.value = File(root)
             currentBranch = Git.open(currentRoot.value).currentHead()
@@ -49,9 +55,16 @@ class GitViewModel : ViewModel() {
                 commitMessages[root] = ""
             }
         } catch (e: Exception) {
-            toast(e.message)
+            currentRoot.value = null
+            currentBranch = ""
+            failedRoots.add(root)
+            if (!e.message?.contains("not found", ignoreCase = true).isTrue()) {
+                toast(e.message)
+            }
         }
     }
+
+    private fun Boolean?.isTrue(): Boolean = this == true
 
     fun getBranchList(): List<String> {
         return try {

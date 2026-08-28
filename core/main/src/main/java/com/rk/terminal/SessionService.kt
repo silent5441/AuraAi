@@ -28,34 +28,66 @@ import kotlinx.coroutines.launch
 class SessionService : Service() {
     private val sessions = hashMapOf<SessionId, TerminalSession>()
     private val sessionWorkDirs = mutableMapOf<SessionId, SessionPwd>()
+    private val sessionMetadata = mutableMapOf<SessionId, SessionMetadata>()
     val sessionList = mutableStateListOf<String>()
     var currentSession = mutableStateOf("main")
     private var deamonRunning = false
+
+    fun getSessionMetadata(id: SessionId): SessionMetadata? {
+        return sessionMetadata[id]
+    }
 
     inner class SessionBinder : Binder() {
         fun getService(): SessionService {
             return this@SessionService
         }
 
-        fun createSession(id: SessionId, client: TerminalSessionClient, activity: Terminal): SessionInfo {
+        fun createSession(
+            id: SessionId,
+            client: TerminalSessionClient,
+            activity: Terminal,
+            name: String = id,
+            useSandbox: Boolean? = null,
+        ): SessionInfo {
+            val historySession = SessionHistory.getSession(id)
+            val effectiveName = if (name == id) historySession?.name ?: name else name
+            val effectiveSandbox = useSandbox ?: historySession?.isSandbox ?: Settings.sandbox
+            
             return MkSession.createSession(
                     activity,
                     client,
                     id,
                     activity.installNextStage != null && activity.installNextStage == NEXT_STAGE.EXTRACTION,
+                    effectiveSandbox,
                 )
                 .let {
                     val (session, pwd) = it
                     sessions[id] = session
                     sessionWorkDirs[id] = pwd
                     sessionList.add(id)
+                    
+                    val metadata = SessionMetadata(
+                        id = id,
+                        name = effectiveName,
+                        createdAt = historySession?.createdAt ?: System.currentTimeMillis(),
+                        lastUsedAt = System.currentTimeMillis(),
+                        workingDir = historySession?.workingDir ?: pwd,
+                        isSandbox = effectiveSandbox,
+                    )
+                    sessionMetadata[id] = metadata
+                    SessionHistory.saveSession(metadata)
+                    
                     updateNotification()
                     SessionInfo(id, pwd, session)
                 }
         }
 
         fun getSession(id: SessionId): TerminalSession? {
-            return sessions[id]
+            val session = sessions[id]
+            if (session != null) {
+                SessionHistory.updateSessionLastUsed(id)
+            }
+            return session
         }
 
         fun getSessionInfoByPwd(pwd: SessionPwd): SessionInfo? {
@@ -73,6 +105,10 @@ class SessionService : Service() {
             sessions.remove(id)
             sessionList.remove(id)
             sessionWorkDirs.remove(id)
+
+            sessionMetadata.remove(id)?.let { meta ->
+                SessionHistory.saveSession(meta.copy(lastUsedAt = System.currentTimeMillis()))
+            }
 
             if (sessions.isEmpty()) {
                 stopSelf()

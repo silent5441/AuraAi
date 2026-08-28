@@ -1,7 +1,3 @@
-
-
-
-
 //DO NOT UPDATE PACKAGE NAME OTHERWISE EXTENSIONS WILL BREAK
 package com.rk.extension
 
@@ -9,12 +5,16 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Resources
 import androidx.annotation.Keep
+import com.rk.extension.api.ExtensionActivity
+import com.rk.extension.api.ExtensionScreen
 import com.rk.extension.api.XedExtensionPoint
 import com.rk.extension.api.logDebug
 import com.rk.extension.api.logError
 import com.rk.extension.api.logInfo
 import com.rk.extension.api.logWarn
+import com.rk.file.createDirIfNot
 import kotlinx.coroutines.CoroutineScope
+import java.io.File
 
 @XedExtensionPoint
 @Keep
@@ -24,8 +24,12 @@ class ExtensionContext(val extension: LocalExtension, val appContext: Context, v
     val currentActivity
         get() = ActivityProvider.currentActivity
 
-    val appResources
-        get() = AppResources(appContext, appContext.resources, appContext.packageName)
+    val appResources by lazy {
+        AppResources(appContext, appContext.resources, appContext.packageName)
+    }
+
+    val extensionFiles
+        get() = File(extension.installPath).resolve("files").createDirIfNot()
 
     val assets: AssetManager by lazy {
         AssetManager::class.java.getDeclaredConstructor().newInstance().apply {
@@ -36,9 +40,12 @@ class ExtensionContext(val extension: LocalExtension, val appContext: Context, v
 
     val resources by lazy { Resources(assets, appContext.resources.displayMetrics, appContext.resources.configuration) }
 
-    //Kept for backward compatibility
     fun logDebug(msg: String) = extension.id.logDebug(msg)
     fun logInfo(msg: String) = extension.id.logInfo(msg)
     fun logWarn(msg: String) = extension.id.logWarn(msg)
     fun logError(msg: String) = extension.id.logError(msg)
+
+    fun startScreen(screen: ExtensionScreen) {
+        ExtensionActivity.start(ActivityProvider.currentActivity ?: appContext, screen)
+    }
 }

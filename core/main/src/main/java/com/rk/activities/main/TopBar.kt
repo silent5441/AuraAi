@@ -4,42 +4,51 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.rk.components.GlobalToolbarActions
+import com.rk.components.compose.appbars.TerminalHeader
 import com.rk.components.isPermanentDrawer
 import com.rk.drawer.DrawerViewModel
+import com.rk.resources.getString
 import com.rk.resources.strings
 import com.rk.terminal.isV
 import com.rk.utils.toast
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun XedTopBar(
     drawerState: DrawerState,
     viewModel: MainViewModel,
     drawerViewModel: DrawerViewModel,
-    fullScreen: Boolean,
     onDrag: (Float) -> Unit = {},
     onDragEnd: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
 
+    val currentTab =
+        if (viewModel.tabs.isNotEmpty()) {
+            if (isV) {
+                viewModel.tabs[viewModel.currentTabIndex]
+            } else {
+                viewModel.tabs.getOrNull(viewModel.currentTabIndex)
+            }
+        } else {
+            null
+        }
+
+    val title = currentTab?.tabTitle?.value ?: strings.app_name.getString()
+
     AnimatedVisibility(visible = viewModel.showTopBar, enter = expandVertically(), exit = shrinkVertically()) {
-        TopAppBar(
-            windowInsets = if (fullScreen) WindowInsets() else TopAppBarDefaults.windowInsets,
+        TerminalHeader(
+            title = title,
             modifier =
                 Modifier.pointerInput(Unit) {
                     detectVerticalDragGestures(
@@ -48,8 +57,7 @@ fun XedTopBar(
                         onDragCancel = { onDragEnd() },
                     )
                 },
-            title = {},
-            navigationIcon = {
+            actions = {
                 if (!isPermanentDrawer) {
                     IconButton(
                         onClick = {
@@ -59,23 +67,13 @@ fun XedTopBar(
                         Icon(Icons.Outlined.Menu, null)
                     }
                 }
-            },
-            actions = {
+
                 GlobalToolbarActions(viewModel, drawerViewModel)
 
-                if (viewModel.tabs.isNotEmpty()) {
-                    val tab =
-                        if (isV) {
-                            viewModel.tabs[viewModel.currentTabIndex]
-                        } else {
-                            viewModel.tabs.getOrNull(viewModel.currentTabIndex)
-                        }
-
-                    if (tab != null) {
-                        tab.apply { Actions() }
-                    } else {
-                        toast(strings.unknown_error)
-                    }
+                if (currentTab != null) {
+                    currentTab.apply { Actions() }
+                } else if (viewModel.tabs.isNotEmpty()) {
+                    toast(strings.unknown_error)
                 }
             },
         )

@@ -309,4 +309,175 @@ val lime =
             },
     )
 
-val builtInThemes = listOf(blueberry, lime)
+val aura =
+    ThemeHolder(
+        id = "aura",
+        name = "Aura (${strings.default_option.getString()})",
+        inheritBase = true,
+        lightScheme =
+            lightColorScheme(
+                primary = Color(0xFF0073A8),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFCFE9FF),
+                onPrimaryContainer = Color(0xFF002F45),
+                secondary = Color(0xFF008F5A),
+                onSecondary = Color(0xFFFFFFFF),
+                secondaryContainer = Color(0xFFB7F5D6),
+                onSecondaryContainer = Color(0xFF003822),
+                tertiary = Color(0xFF9A43AD),
+                onTertiary = Color(0xFFFFFFFF),
+                tertiaryContainer = Color(0xFFFBD7FF),
+                onTertiaryContainer = Color(0xFF3A0048),
+                error = Color(0xFFBA1A1A),
+                onError = Color(0xFFFFFFFF),
+                errorContainer = Color(0xFFFFDAD6),
+                onErrorContainer = Color(0xFF410002),
+                background = Color(0xFFF5F8FC),
+                onBackground = Color(0xFF1A1C22),
+                surface = Color(0xFFF5F8FC),
+                onSurface = Color(0xFF1A1C22),
+                surfaceVariant = Color(0xFFDFE5EF),
+                onSurfaceVariant = Color(0xFF444C5A),
+                outline = Color(0xFF747C8C),
+                outlineVariant = Color(0xFFC3CAD6),
+                scrim = Color(0xFF000000),
+                inverseSurface = Color(0xFF2F323A),
+                inverseOnSurface = Color(0xFFECF0F7),
+                inversePrimary = Color(0xFF8FD4FF),
+                surfaceTint = Color(0xFF0073A8),
+                surfaceDim = Color(0xFFD6DCE4),
+                surfaceBright = Color(0xFFF5F8FC),
+                surfaceContainerLowest = Color(0xFFFFFFFF),
+                surfaceContainerLow = Color(0xFFEFF3F9),
+                surfaceContainer = Color(0xFFE9EDF4),
+                surfaceContainerHigh = Color(0xFFE3E8EF),
+                surfaceContainerHighest = Color(0xFFDDE2E9),
+            ),
+        darkScheme =
+            darkColorScheme(
+                primary = Color(0xFF46C8FF),
+                onPrimary = Color(0xFF00344A),
+                primaryContainer = Color(0xFF0E3A55),
+                onPrimaryContainer = Color(0xFFCFE9FF),
+                secondary = Color(0xFF43E39B),
+                onSecondary = Color(0xFF00331F),
+                secondaryContainer = Color(0xFF0D3D2B),
+                onSecondaryContainer = Color(0xFFB8F5D8),
+                tertiary = Color(0xFFE879F9),
+                onTertiary = Color(0xFF3C0D45),
+                tertiaryContainer = Color(0xFF571E62),
+                onTertiaryContainer = Color(0xFFFBD7FF),
+                error = Color(0xFFFF5F6E),
+                onError = Color(0xFF410005),
+                errorContainer = Color(0xFF5C1018),
+                onErrorContainer = Color(0xFFFFDADB),
+                background = Color(0xFF0A0C10),
+                onBackground = Color(0xFFDEE5EE),
+                surface = Color(0xFF0A0C10),
+                onSurface = Color(0xFFDEE5EE),
+                surfaceVariant = Color(0xFF161C26),
+                onSurfaceVariant = Color(0xFF7B8694),
+                outline = Color(0xFF38465A),
+                outlineVariant = Color(0xFF212A38),
+                scrim = Color(0xFF000000),
+                inverseSurface = Color(0xFFDEE5EE),
+                inverseOnSurface = Color(0xFF0A0C10),
+                inversePrimary = Color(0xFF0073A8),
+                surfaceTint = Color(0xFF46C8FF),
+                surfaceDim = Color(0xFF0A0C10),
+                surfaceBright = Color(0xFF161C26),
+                surfaceContainerLowest = Color(0xFF05070A),
+                surfaceContainerLow = Color(0xFF0D1117),
+                surfaceContainer = Color(0xFF10141B),
+                surfaceContainerHigh = Color(0xFF161C26),
+                surfaceContainerHighest = Color(0xFF1B2330),
+            ),
+        lightTokenColors = JsonArray(),
+        darkTokenColors = JsonArray(),
+        lightEditorColors = emptyList(),
+        darkEditorColors = emptyList(),
+        lightTerminalColors =
+            Properties().also {
+                it["foreground"] = Color(0xFF1A1C22).toHex()
+                it["background"] = Color(0xFFF5F8FC).toHex()
+                it["cursor"] = "#0073A8"
+
+                it["color0"] = "#1A1C22"
+                it["color8"] = "#444C5A"
+
+                it["color1"] = "#C53A47"
+                it["color9"] = "#FF5F6E"
+
+                it["color2"] = "#1B9E63"
+                it["color10"] = "#008F5A"
+
+                it["color3"] = "#B8860B"
+                it["color11"] = "#FFC857"
+
+                it["color4"] = "#4A6FC9"
+                it["color12"] = "#7AA2F7"
+
+                it["color5"] = "#A34DB6"
+                it["color13"] = "#E879F9"
+
+                it["color6"] = "#0084B8"
+                it["color14"] = "#46C8FF"
+
+                it["color7"] = "#3A3F4A"
+                it["color15"] = "#000000"
+
+                it["color16"] = "#FFC857"
+                it["color17"] = "#0073A8"
+                it["color18"] = "#E9EDF4"
+                it["color19"] = "#DDE2E9"
+                it["color20"] = "#747C8C"
+                it["color21"] = "#1A1C22"
+            },
+        darkTerminalColors =
+            Properties().also {
+                it["background"] = Color(0xFF0A0C10).toHex()
+                it["foreground"] = Color(0xFFDEE5EE).toHex()
+                it["cursor"] = "#46C8FF"
+
+                // black
+                it["color0"] = "#0A0C10"
+                it["color8"] = "#4D5665"
+
+                // red
+                it["color1"] = "#FF5F6E"
+                it["color9"] = "#FF8793"
+
+                // green
+                it["color2"] = "#2EC483"
+                it["color10"] = "#43E39B"
+
+                // yellow
+                it["color3"] = "#FFC857"
+                it["color11"] = "#FFD98A"
+
+                // blue
+                it["color4"] = "#7AA2F7"
+                it["color12"] = "#A3C2FA"
+
+                // magenta
+                it["color5"] = "#E879F9"
+                it["color13"] = "#F0A5FC"
+
+                // cyan
+                it["color6"] = "#46C8FF"
+                it["color14"] = "#7ADBFF"
+
+                // white
+                it["color7"] = "#DEE5EE"
+                it["color15"] = "#FFFFFF"
+
+                it["color16"] = "#FFC857"
+                it["color17"] = "#46C8FF"
+                it["color18"] = "#10141B"
+                it["color19"] = "#161C26"
+                it["color20"] = "#7B8694"
+                it["color21"] = "#DEE5EE"
+            },
+    )
+
+val builtInThemes = listOf(aura, blueberry, lime)

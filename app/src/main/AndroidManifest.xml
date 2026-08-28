@@ -91,6 +91,9 @@
             android:name="com.rk.crashhandler.CrashActivity"
             android:exported="false" />
         <activity
+            android:name="com.rk.extension.api.ExtensionActivity"
+            android:exported="false" />
+        <activity
             android:name="com.rk.activities.settings.SettingsActivity"
             android:exported="false" />
         <activity

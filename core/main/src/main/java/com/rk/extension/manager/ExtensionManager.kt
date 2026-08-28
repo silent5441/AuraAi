@@ -229,8 +229,9 @@ open class ExtensionManager(private val context: Application) : CoroutineScope b
 
                 val loadedExtension = loadedExtensions[extension]
                 runCatching {
+                        loadedExtension?.api?.onDispose()
                         if (update) {
-                            loadedExtension?.api?.onUpdated()
+                            loadedExtension?.api?.beforeUpdate()
                         } else {
                             loadedExtension?.api?.onUninstalled()
                         }

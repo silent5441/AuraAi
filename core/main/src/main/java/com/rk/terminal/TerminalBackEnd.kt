@@ -21,7 +21,11 @@ class TerminalBackEnd : TerminalViewClient, TerminalSessionClient {
 
     override fun onTitleChanged(changedSession: TerminalSession) {}
 
-    override fun onSessionFinished(finishedSession: TerminalSession) {}
+    override fun onSessionFinished(finishedSession: TerminalSession) {
+        // Session finished - just update history lastUsedAt
+        // The title is not a property of TerminalSession directly.
+        // Store session info from the session client
+    }
 
     override fun onCopyTextToClipboard(session: TerminalSession, text: String) {
         ClipboardUtils.copyText("Terminal", text)

@@ -428,6 +428,20 @@ fun SettingsTerminalScreen(overrideNavController: NavController? = null) {
             )
 
             SettingsItem(
+                label = "Confirm session close",
+                description = "Ask for confirmation before closing a terminal session",
+                default = Settings.confirm_close_session,
+                sideEffect = { Settings.confirm_close_session = it },
+            )
+
+            SettingsItem(
+                label = "Session history",
+                description = "Remember session metadata (name, working directory) for future reference",
+                default = Settings.session_history_enabled,
+                sideEffect = { Settings.session_history_enabled = it },
+            )
+
+            SettingsItem(
                 label = stringResource(strings.project_as_wk),
                 description = stringResource(strings.project_as_wk_desc),
                 default = Settings.project_as_pwd,

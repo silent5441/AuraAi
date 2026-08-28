@@ -11,6 +11,7 @@ import com.rk.file.FileObject
 import com.rk.filetree.FileTreeTab
 import com.rk.git.GitTab
 import com.rk.git.GitViewModel
+import com.rk.settings.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -54,6 +55,20 @@ class DrawerViewModel : ViewModel() {
 
         val tab = FileTreeTab(fileObject)
         addDrawerTab(tab, save)
+
+        if (fileObject.isDirectory()) {
+            recordProject(fileObject.getAbsolutePath())
+        }
+    }
+
+    private fun recordProject(path: String) {
+        val recent = Settings.recent_projects.split("\n").filter { it.isNotBlank() && it != path }
+        Settings.recent_projects = (listOf(path) + recent).take(8).joinToString("\n")
+
+        val all = Settings.all_projects.split("\n").filter { it.isNotBlank() }
+        if (path !in all) {
+            Settings.all_projects = (all + path).joinToString("\n")
+        }
     }
 
     fun addDrawerTab(tab: DrawerTab, save: Boolean = false) {

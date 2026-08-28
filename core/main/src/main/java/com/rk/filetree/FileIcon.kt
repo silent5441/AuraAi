@@ -142,13 +142,14 @@ fun getDrawableFileIcon(fileName: String, isDirectory: Boolean, isExpanded: Bool
 }
 
 private fun getBuiltInFileIcon(fileName: String): Icon =
-    when (fileName) {
-        "contract.sol",
-        "LICENSE",
-        "NOTICE" -> Icon.ResourceIcon(text)
-        "gradlew",
-        "gradlew.bat" -> Icon.ResourceIcon(gradle)
-        "README.md" -> Icon.ResourceIcon(info)
+    when {
+        fileName == "node" || fileName == "node.exe" || fileName == "npm" || fileName == "npx" -> Icon.ResourceIcon(drawables.node)
+        fileName == ".env" || fileName.startsWith(".env.") -> Icon.ResourceIcon(drawables.env)
+        fileName == "contract.sol" ||
+            fileName == "LICENSE" ||
+            fileName == "NOTICE" -> Icon.ResourceIcon(text)
+        fileName == "gradlew" || fileName == "gradlew.bat" -> Icon.ResourceIcon(gradle)
+        fileName == "README.md" -> Icon.ResourceIcon(info)
 
         else -> {
             val ext = fileName.substringAfterLast('.', "")
